@@ -129,38 +129,45 @@ button {
         <div>👀 Views: <span id="viewCount">0</span></div>
         <div>😆 Dodged: <span id="escCount">0</span></div>
     </div>
+
+    <div style="margin-top:15px;">
+        <button id="newLinkBtn" style="background: var(--secondary-pink); color: #fff; padding:10px 20px; border-radius:50px; border:none; cursor:pointer;">
+            💌 Create Your Own Valentine Link
+        </button>
+    </div>
+
     <div id="message" style="margin-top: 15px; font-weight: 600; color: var(--dark-pink);"></div>
 </div>
 
-<!-- Funny Sound -->
+<!-- Sounds -->
 <audio id="yaySound">
     <source src="https://www.soundjay.com/button/sounds/button-3.mp3" type="audio/mpeg">
 </audio>
+<audio id="yemeteSound">
+    <source src="https://www.myinstants.com/media/sounds/yemete-cudechai.mp3" type="audio/mpeg">
+</audio>
 
 <script>
-// Get URL parameters
+// URL parameters
 const params = new URLSearchParams(window.location.search);
 const fromName = params.get("from");
 const toName = params.get("to");
 
-// Initialize view count
+// View count
 let views = parseInt(localStorage.getItem('v_count') || 0);
 if(fromName && toName){
     views++;
     localStorage.setItem('v_count', views);
 
-    // Show game card
     document.getElementById('setup').style.display='none';
     document.getElementById('game').style.display='block';
     document.getElementById('question').innerText = `${toName}, will you be my Valentine?`;
     document.getElementById('fromText').innerText = `With love from ${fromName}`;
     document.getElementById('viewCount').innerText = views;
-
-    // Hide link box if visiting via link
     document.getElementById('linkBox').style.display='none';
 }
 
-// Generate Link on Setup
+// Generate link
 function generateLink(){
     const f = document.getElementById('fromInput').value;
     const t = document.getElementById('toInput').value;
@@ -171,7 +178,7 @@ function generateLink(){
     document.getElementById('linkText').innerText = link;
 }
 
-// Copy Link Button
+// Copy link
 function copyLink(){
     const linkText = document.getElementById('linkText').innerText;
     navigator.clipboard.writeText(linkText).then(()=>{
@@ -179,12 +186,10 @@ function copyLink(){
     });
 }
 
-// Runaway No Button
+// No button logic
 const noBtn = document.getElementById('no');
 const yesBtn = document.getElementById('yes');
 let escapes = 0;
-
-// Detect mobile
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 function moveNo() {
@@ -195,10 +200,8 @@ function moveNo() {
     const x = Math.random() * (cardRect.width - noBtn.offsetWidth);
     const y = Math.random() * (cardRect.height - noBtn.offsetHeight);
     noBtn.style.transform = `translate(${x}px, ${y}px) scale(${Math.max(1 - escapes*0.1,0.4)})`;
-
     yesBtn.style.transform = `scale(${1 + escapes*0.15})`;
 
-    // Fun emoji pop
     const e = document.createElement('div');
     e.className='heart';
     e.innerHTML=['😂','💔','💥','😆'][Math.floor(Math.random()*4)];
@@ -214,31 +217,30 @@ function moveNo() {
     }
 }
 
-// Desktop hover
 if(!isMobile) noBtn.addEventListener('mouseover', moveNo);
+if(isMobile) noBtn.addEventListener('touchstart', e=>{e.preventDefault(); moveNo();});
 
-// Mobile touch
-if(isMobile){
-    noBtn.addEventListener('touchstart', function(e){
-        e.preventDefault();
-        moveNo();
-    });
-}
-
-// YES Button
+// YES button
 yesBtn.addEventListener('click', ()=>{
-    const sound = document.getElementById('yaySound');
-    sound.play();
     document.getElementById('message').innerHTML="🎉 YAY! Best Day Ever! 🥂";
     yesBtn.style.display='none';
-    if(document.getElementById('no')) noBtn.style.display='none';
+    if(noBtn) noBtn.style.display='none';
+
+    // Play sounds
+    document.getElementById('yaySound').play();
+    document.getElementById('yemeteSound').play();
 
     for(let i=0;i<100;i++){
         setTimeout(createHeart,i*20);
     }
 });
 
-// Floating Hearts
+// New link button
+document.getElementById('newLinkBtn').addEventListener('click', ()=>{
+    window.location.href = window.location.pathname;
+});
+
+// Hearts animation
 function createHeart(){
     const h = document.createElement('div');
     h.className='heart';
