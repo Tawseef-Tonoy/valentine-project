@@ -42,7 +42,7 @@ body {
     border: 4px solid #fff;
     box-shadow: 0 20px 40px rgba(255, 77, 109, 0.2);
     text-align: center;
-    width: 450px; /* bigger playground */
+    width: 450px;
     position: relative;
     transition: transform 0.3s ease;
     animation: floatCard 3s ease-in-out infinite;
@@ -138,23 +138,29 @@ button {
 </audio>
 
 <script>
+// Get URL parameters
 const params = new URLSearchParams(window.location.search);
 const fromName = params.get("from");
 const toName = params.get("to");
 
 // Initialize view count
 let views = parseInt(localStorage.getItem('v_count') || 0);
-if(fromName){
+if(fromName && toName){
     views++;
     localStorage.setItem('v_count', views);
+
+    // Show game card
     document.getElementById('setup').style.display='none';
     document.getElementById('game').style.display='block';
     document.getElementById('question').innerText = `${toName}, will you be my Valentine?`;
     document.getElementById('fromText').innerText = `With love from ${fromName}`;
     document.getElementById('viewCount').innerText = views;
+
+    // Hide link box if visiting via link
+    document.getElementById('linkBox').style.display='none';
 }
 
-// Generate Link
+// Generate Link on Setup
 function generateLink(){
     const f = document.getElementById('fromInput').value;
     const t = document.getElementById('toInput').value;
@@ -165,7 +171,7 @@ function generateLink(){
     document.getElementById('linkText').innerText = link;
 }
 
-// Copy Link
+// Copy Link Button
 function copyLink(){
     const linkText = document.getElementById('linkText').innerText;
     navigator.clipboard.writeText(linkText).then(()=>{
@@ -173,7 +179,7 @@ function copyLink(){
     });
 }
 
-// Runaway No Button - smart for desktop + mobile
+// Runaway No Button
 const noBtn = document.getElementById('no');
 const yesBtn = document.getElementById('yes');
 let escapes = 0;
@@ -185,7 +191,6 @@ function moveNo() {
     escapes++;
     document.getElementById('escCount').innerText = escapes;
 
-    // Get card dimensions
     const cardRect = noBtn.parentElement.getBoundingClientRect();
     const x = Math.random() * (cardRect.width - noBtn.offsetWidth);
     const y = Math.random() * (cardRect.height - noBtn.offsetHeight);
@@ -203,7 +208,6 @@ function moveNo() {
     document.body.appendChild(e);
     setTimeout(()=>e.remove(),1500);
 
-    // After several escapes, No disappears
     if(escapes > 5){
         noBtn.style.opacity='0';
         setTimeout(()=>noBtn.remove(),300);
@@ -211,14 +215,12 @@ function moveNo() {
 }
 
 // Desktop hover
-if(!isMobile){
-    noBtn.addEventListener('mouseover', moveNo);
-}
+if(!isMobile) noBtn.addEventListener('mouseover', moveNo);
 
 // Mobile touch
 if(isMobile){
     noBtn.addEventListener('touchstart', function(e){
-        e.preventDefault(); // prevent immediate click
+        e.preventDefault();
         moveNo();
     });
 }
@@ -231,7 +233,6 @@ yesBtn.addEventListener('click', ()=>{
     yesBtn.style.display='none';
     if(document.getElementById('no')) noBtn.style.display='none';
 
-    // Hearts Explosion
     for(let i=0;i<100;i++){
         setTimeout(createHeart,i*20);
     }
