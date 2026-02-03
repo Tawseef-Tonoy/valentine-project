@@ -2,264 +2,238 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Be My Valentine 💘</title>
 <style>
-/* 🌸 Body & background */
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    overflow: hidden;
-    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #fad0c4 100%);
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: url('https://i.imgur.com/Q9rY0hQ.png'), auto; /* heart cursor */
-}
+    :root {
+        --primary-pink: #ff85a2;
+        --secondary-pink: #ffacc5;
+        --dark-pink: #ff4d6d;
+        --bg-gradient: linear-gradient(135deg, #fce4ec 0%, #ffc1e3 100%);
+    }
 
-/* 🌸 Main card */
-.card {
-    background: rgba(255,255,255,0.1);
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    text-align: center;
-    width: 350px;
-    backdrop-filter: blur(10px);
-    position: relative;
-}
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Poppins', sans-serif;
+        background: var(--bg-gradient);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
 
-/* 🌸 Headings */
-h2 {
-    font-size: 20px;
-    margin-bottom: 5px;
-    color: #fff;
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-}
-#fromText {
-    margin-top: 0;
-    font-size: 14px;
-    color: #ffe6f2;
-}
+    /* ✨ Background Floating Elements */
+    .floating-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        pointer-events: none;
+    }
 
-/* 🌸 Buttons */
-button {
-    padding: 10px 20px;
-    border-radius: 12px;
-    border: none;
-    font-size: 16px;
-    margin: 10px;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
+    /* 🌸 Improved Card */
+    .card {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(15px);
+        padding: 40px;
+        border-radius: 30px;
+        border: 4px solid #fff;
+        box-shadow: 0 20px 40px rgba(255, 77, 109, 0.2);
+        text-align: center;
+        width: 380px;
+        position: relative;
+        transition: transform 0.3s ease;
+        animation: floatCard 3s ease-in-out infinite;
+    }
 
-/* 🌸 Yes button */
-#yes {
-    background: #ff6eb4;
-    color: white;
-    box-shadow: 0 5px 15px rgba(255,110,180,0.5);
-}
-#yes:hover {
-    transform: scale(1.1);
-    box-shadow: 0 8px 25px rgba(255,110,180,0.8);
-}
+    @keyframes floatCard {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
 
-/* 🌸 No button */
-#no {
-    background: #f44336;
-    color: white;
-    position: absolute;
-    box-shadow: 0 5px 15px rgba(244,67,54,0.5);
-}
+    h2 { color: var(--dark-pink); font-size: 26px; margin-bottom: 10px; }
+    p { color: #880e4f; margin-bottom: 20px; }
 
-/* 🌸 Counters and messages */
-#counter, #yesCount {
-    font-size: 13px;
-    color: #fff;
-    opacity: 0.9;
-    margin-top: 5px;
-}
-#message {
-    margin-top: 20px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #fff;
-}
+    /* 🎀 Inputs & Buttons */
+    input {
+        width: 80%;
+        padding: 12px;
+        margin: 10px 0;
+        border: 2px solid var(--secondary-pink);
+        border-radius: 15px;
+        outline: none;
+        transition: 0.3s;
+    }
+    input:focus { border-color: var(--dark-pink); }
 
-/* 🌸 Floating hearts */
-.heart {
-    position: absolute;
-    color: #ff5ca2;
-    font-size: 20px;
-    animation: float 4s linear infinite;
-}
-@keyframes float {
-    from { transform: translateY(0); opacity: 1; }
-    to { transform: translateY(-100vh); opacity: 0; }
-}
+    button {
+        padding: 12px 25px;
+        border-radius: 50px;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
 
-/* 🌸 Emoji pop */
-.emoji {
-    position: absolute;
-    font-size: 24px;
-    animation: pop 1s ease-out forwards;
-}
-@keyframes pop {
-    from { transform: scale(1); opacity: 1; }
-    to { transform: scale(2); opacity: 0; }
-}
+    #yes {
+        background: var(--dark-pink);
+        color: white;
+        font-size: 1.2rem;
+    }
 
-/* 🌸 Confetti */
-.confetti {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background-color: #ff69b4;
-    animation: confetti-fall 2s linear forwards;
-}
-@keyframes confetti-fall {
-    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-    100% { transform: translateY(400px) rotate(720deg); opacity: 0; }
-}
+    #no {
+        background: #fff;
+        color: var(--dark-pink);
+        border: 2px solid var(--dark-pink);
+        position: absolute;
+    }
+
+    /* 📊 Stats Section */
+    .stats-footer {
+        margin-top: 25px;
+        font-size: 12px;
+        color: #ad1457;
+        display: flex;
+        justify-content: space-around;
+        border-top: 1px solid rgba(255, 77, 109, 0.2);
+        padding-top: 15px;
+    }
+
+    /* 🎈 Animations */
+    .heart {
+        position: absolute;
+        animation: fly 4s linear forwards;
+        z-index: 10;
+    }
+
+    @keyframes fly {
+        to { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+    }
+
+    #linkBox {
+        word-break: break-all;
+        font-size: 12px;
+        background: #fff;
+        padding: 10px;
+        border-radius: 10px;
+        margin-top: 10px;
+    }
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
-
 <body>
+
+<div class="floating-bg" id="bgLayer"></div>
+
 <div class="card" id="setup">
-    <h2>Create your Valentine link 💘</h2>
-    <input id="fromInput" placeholder="Your name" />
-    <input id="toInput" placeholder="Partner's name" />
-    <button onclick="generateLink()">Generate Link 🔗</button>
-    <p id="linkBox"></p>
+    <h2>Valentine Maker 🎀</h2>
+    <p>Create a link for your crush!</p>
+    <input id="fromInput" placeholder="Your Name" />
+    <input id="toInput" placeholder="Crush's Name" />
+    <button id="yes" onclick="generateLink()">Create Magic ✨</button>
+    <div id="linkBox" style="display:none;"></div>
 </div>
 
 <div class="card" id="game" style="display:none;">
     <h2 id="question"></h2>
     <p id="fromText"></p>
 
-    <button id="yes">Yes 💖</button>
-    <button id="no">No 😐</button>
+    <div style="height: 120px; display: flex; align-items: center; justify-content: center; position: relative;">
+        <button id="yes">YES! 💘</button>
+        <button id="no">No 😢</button>
+    </div>
 
-    <div id="counter">No escaped: 0 😆</div>
-    <div id="yesCount"></div>
-    <div id="message"></div>
+    <div class="stats-footer">
+        <div>👀 Views: <span id="viewCount">0</span></div>
+        <div>😆 Dodged: <span id="escCount">0</span></div>
+    </div>
+    <div id="message" style="margin-top: 15px; font-weight: 600; color: var(--dark-pink);"></div>
 </div>
 
-<audio id="yesSound">
-    <source src="https://www.soundjay.com/human/sounds/applause-01.mp3">
-</audio>
-
 <script>
-const params = new URLSearchParams(window.location.search);
-const fromName = params.get("from");
-const toName = params.get("to");
+    const params = new URLSearchParams(window.location.search);
+    const fromName = params.get("from");
+    const toName = params.get("to");
 
-const setup = document.getElementById("setup");
-const game = document.getElementById("game");
-
-const noBtn = document.getElementById("no");
-const yesBtn = document.getElementById("yes");
-const question = document.getElementById("question");
-const fromText = document.getElementById("fromText");
-const counter = document.getElementById("counter");
-const message = document.getElementById("message");
-const yesCountBox = document.getElementById("yesCount");
-const sound = document.getElementById("yesSound");
-
-let escapes = 0;
-let noScale = 1;
-let yesScale = 1;
-
-// Show game if link opened with params
-if (fromName && toName) {
-    setup.style.display = "none";
-    game.style.display = "block";
-
-    question.innerHTML = `💘 ${toName}, will you be my Valentine? 💘`;
-    fromText.innerHTML = `— from <b>${fromName}</b>`;
-}
-
-// Generate share link
-function generateLink() {
-    const from = encodeURIComponent(document.getElementById("fromInput").value);
-    const to = encodeURIComponent(document.getElementById("toInput").value);
-    const link = `${window.location.origin}${window.location.pathname}?from=${from}&to=${to}`;
-    document.getElementById("linkBox").innerHTML = `<a href="${link}" target="_blank">${link}</a>`;
-}
-
-// Floating hearts
-setInterval(() => {
-    const h = document.createElement("div");
-    h.className = "heart";
-    h.innerHTML = "❤️";
-    h.style.left = Math.random() * 100 + "vw";
-    h.style.bottom = "0";
-    h.style.fontSize = 16 + Math.random() * 20 + "px";
-    document.body.appendChild(h);
-    setTimeout(() => h.remove(), 4000);
-}, 600);
-
-// Escape logic for No button
-function escapeNo() {
-    escapes++;
-    counter.innerText = `No escaped: ${escapes} 😆`;
-
-    noScale = Math.max(noScale - 0.1, 0.2);
-    yesScale += 0.1;
-
-    noBtn.style.transform = `scale(${noScale})`;
-    yesBtn.style.transform = `scale(${yesScale})`;
-
-    noBtn.style.left = Math.random() * 200 + "px";
-    noBtn.style.top = Math.random() * 150 + "px";
-
-    const e = document.createElement("div");
-    e.className = "emoji";
-    e.innerHTML = "😂";
-    e.style.left = Math.random() * 80 + "%";
-    e.style.top = Math.random() * 80 + "%";
-    document.body.appendChild(e);
-    setTimeout(() => e.remove(), 1000);
-
-    // After 6 tries, No disappears
-    if (escapes >= 6) {
-        noBtn.style.display = "none";
-        counter.innerText = "No option removed 😈";
+    // Initialize View Count
+    let views = parseInt(localStorage.getItem('v_count') || 0);
+    if (fromName) {
+        views++;
+        localStorage.setItem('v_count', views);
+        document.getElementById('setup').style.display = 'none';
+        document.getElementById('game').style.display = 'block';
+        document.getElementById('question').innerText = `${toName}, will you be my Valentine?`;
+        document.getElementById('fromText').innerText = `With love from ${fromName}`;
+        document.getElementById('viewCount').innerText = views;
     }
-}
 
-noBtn.addEventListener("mouseover", escapeNo);
-noBtn.addEventListener("touchstart", escapeNo);
-
-// Confetti explosion on YES
-function confetti() {
-    for (let i = 0; i < 50; i++) {
-        const c = document.createElement("div");
-        c.className = "confetti";
-        c.style.left = Math.random() * window.innerWidth + "px";
-        c.style.backgroundColor = `hsl(${Math.random()*360}, 100%, 70%)`;
-        document.body.appendChild(c);
-        setTimeout(() => c.remove(), 2000);
+    // Link Generation
+    function generateLink() {
+        const f = document.getElementById('fromInput').value;
+        const t = document.getElementById('toInput').value;
+        if(!f || !t) return alert("Please fill both names! ❤️");
+        
+        const link = `${window.location.origin}${window.location.pathname}?from=${encodeURIComponent(f)}&to=${encodeURIComponent(t)}`;
+        const box = document.getElementById('linkBox');
+        box.style.display = 'block';
+        box.innerHTML = `Send this to ${t}: <br><small>${link}</small>`;
     }
-}
 
-// YES click
-yesBtn.addEventListener("click", () => {
-    sound.play();
-    confetti();
+    // The Runaway Button Logic
+    const noBtn = document.getElementById('no');
+    const yesBtn = document.getElementById('yes');
+    let escapes = 0;
 
-    let yesCount = localStorage.getItem("yesCount") || 0;
-    yesCount++;
-    localStorage.setItem("yesCount", yesCount);
+    function moveNo() {
+        escapes++;
+        document.getElementById('escCount').innerText = escapes;
+        
+        // Move button randomly within the card
+        const x = Math.random() * 150 - 75;
+        const y = Math.random() * 100 - 50;
+        noBtn.style.transform = `translate(${x}px, ${y}px) scale(${Math.max(1 - escapes*0.1, 0.4)})`;
+        
+        // Make Yes button bigger
+        yesBtn.style.transform = `scale(${1 + escapes * 0.15})`;
 
-    yesBtn.style.display = "none";
-    noBtn.style.display = "none";
-    counter.style.display = "none";
+        if(escapes > 5) {
+            noBtn.style.opacity = '0';
+            setTimeout(() => noBtn.remove(), 300);
+        }
+    }
 
-    message.innerHTML = `💖 ${toName} said YES! 💖<br>${fromName} wins Valentine 😍`;
-    yesCountBox.innerText = `Total YES clicks on this device: ${yesCount}`;
-});
+    noBtn.addEventListener('mouseover', moveNo);
+    noBtn.addEventListener('touchstart', moveNo);
+
+    // Success Action
+    yesBtn.addEventListener('click', () => {
+        document.getElementById('message').innerHTML = "🎉 YAY! Best Day Ever! 🥂";
+        yesBtn.style.display = 'none';
+        if(document.getElementById('no')) noBtn.style.display = 'none';
+        
+        // Confetti explosion
+        for(let i=0; i<100; i++) {
+            setTimeout(createHeart, i * 20);
+        }
+    });
+
+    // Background decoration
+    function createHeart() {
+        const h = document.createElement('div');
+        h.className = 'heart';
+        h.innerHTML = ['❤️','💖','🌸','✨'][Math.floor(Math.random()*4)];
+        h.style.left = Math.random() * 100 + 'vw';
+        h.style.bottom = '-5%';
+        h.style.fontSize = (Math.random() * 20 + 20) + 'px';
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 4000);
+    }
+
+    setInterval(createHeart, 800);
 </script>
 </body>
 </html>
