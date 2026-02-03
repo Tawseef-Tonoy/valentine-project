@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Valentine 💘</title>
+
+<style>
+  body {
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    color: white;
+  }
+
+  .card {
+    background: rgba(0,0,0,0.25);
+    padding: 25px;
+    border-radius: 16px;
+    text-align: center;
+    width: 350px;
+    position: relative;
+  }
+
+  input {
+    width: 90%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    margin-bottom: 10px;
+    font-size: 15px;
+  }
+
+  button {
+    padding: 10px 18px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    margin: 8px;
+    transition: transform 0.2s ease;
+  }
+
+  #yes { background: #4caf50; color: white; }
+  #no  { background: #f44336; color: white; position: absolute; }
+
+  #counter, #yesCount {
+    font-size: 13px;
+    opacity: 0.9;
+  }
+
+  .heart {
+    position: absolute;
+    color: red;
+    animation: float 4s linear infinite;
+  }
+
+  @keyframes float {
+    from { transform: translateY(0); opacity: 1; }
+    to { transform: translateY(-100vh); opacity: 0; }
+  }
+
+  .emoji {
+    position: absolute;
+    font-size: 24px;
+    animation: pop 1s ease-out forwards;
+  }
+
+  @keyframes pop {
+    from { transform: scale(1); opacity: 1; }
+    to { transform: scale(2); opacity: 0; }
+  }
+
+  a { color: #fff; word-break: break-all; }
+</style>
+</head>
+
+<body>
+
+<div class="card" id="setup">
+  <h2>Create your Valentine link 💘</h2>
+  <input id="fromInput" placeholder="Your name" />
+  <input id="toInput" placeholder="Partner's name" />
+  <button onclick="generateLink()">Generate Link 🔗</button>
+  <p id="linkBox"></p>
+</div>
+
+<div class="card" id="game" style="display:none;">
+  <h2 id="question"></h2>
+  <p id="fromText"></p>
+
+  <button id="yes">Yes 💖</button>
+  <button id="no">No 😐</button>
+
+  <div id="counter">No escaped: 0 😆</div>
+  <div id="yesCount"></div>
+  <div id="message"></div>
+</div>
+
+<audio id="yesSound">
+  <source src="https://www.soundjay.com/human/sounds/applause-01.mp3">
+</audio>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const fromName = params.get("from");
+  const toName = params.get("to");
+
+  const setup = document.getElementById("setup");
+  const game = document.getElementById("game");
+
+  const noBtn = document.getElementById("no");
+  const yesBtn = document.getElementById("yes");
+  const question = document.getElementById("question");
+  const fromText = document.getElementById("fromText");
+  const counter = document.getElementById("counter");
+  const message = document.getElementById("message");
+  const yesCountBox = document.getElementById("yesCount");
+  const sound = document.getElementById("yesSound");
+
+  let escapes = 0;
+  let noScale = 1;
+  let yesScale = 1;
+
+  // Show game if link opened with params
+  if (fromName && toName) {
+    setup.style.display = "none";
+    game.style.display = "block";
+
+    question.innerHTML = `💘 ${toName}, will you be my Valentine? 💘`;
+    fromText.innerHTML = `— from <b>${fromName}</b>`;
+  }
+
+  // Generate share link
+  function generateLink() {
+    const from = encodeURIComponent(document.getElementById("fromInput").value);
+    const to = encodeURIComponent(document.getElementById("toInput").value);
+    const link = `${window.location.origin}${window.location.pathname}?from=${from}&to=${to}`;
+    document.getElementById("linkBox").innerHTML = `<a href="${link}">${link}</a>`;
+  }
+
+  // Floating hearts
+  setInterval(() => {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.innerHTML = "❤️";
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.bottom = "0";
+    h.style.fontSize = 16 + Math.random() * 20 + "px";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 4000);
+  }, 600);
+
+  function escapeNo() {
+    escapes++;
+    counter.innerText = `No escaped: ${escapes} 😆`;
+
+    noScale = Math.max(noScale - 0.1, 0.2);
+    yesScale += 0.1;
+
+    noBtn.style.transform = `scale(${noScale})`;
+    yesBtn.style.transform = `scale(${yesScale})`;
+
+    noBtn.style.left = Math.random() * 200 + "px";
+    noBtn.style.top = Math.random() * 150 + "px";
+
+    const e = document.createElement("div");
+    e.className = "emoji";
+    e.innerHTML = "😂";
+    e.style.left = Math.random() * 80 + "%";
+    e.style.top = Math.random() * 80 + "%";
+    document.body.appendChild(e);
+    setTimeout(() => e.remove(), 1000);
+
+    // No becomes impossible
+    if (escapes >= 6) {
+      noBtn.style.display = "none";
+      counter.innerText = "No option removed 😈";
+    }
+  }
+
+  // Desktop
+  noBtn.addEventListener("mouseover", escapeNo);
+  // Mobile evil mode
+  noBtn.addEventListener("touchstart", escapeNo);
+
+  // YES click
+  yesBtn.addEventListener("click", () => {
+    sound.play();
+
+    let yesCount = localStorage.getItem("yesCount") || 0;
+    yesCount++;
+    localStorage.setItem("yesCount", yesCount);
+
+    yesBtn.style.display = "none";
+    noBtn.style.display = "none";
+    counter.style.display = "none";
+
+    message.innerHTML = `💖 ${toName} said YES! 💖<br>${fromName} wins Valentine 😍`;
+    yesCountBox.innerText = `Total YES clicks on this device: ${yesCount}`;
+  });
+</script>
+
+</body>
+</html>
