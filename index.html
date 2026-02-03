@@ -42,7 +42,7 @@ body {
     border: 4px solid #fff;
     box-shadow: 0 20px 40px rgba(255, 77, 109, 0.2);
     text-align: center;
-    width: 380px;
+    width: 420px; /* bigger playground */
     position: relative;
     transition: transform 0.3s ease;
     animation: floatCard 3s ease-in-out infinite;
@@ -76,26 +76,11 @@ button {
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-#generate {
-    background: var(--dark-pink);
-    color: white;
-    font-size: 1rem;
-}
+#generate { background: var(--dark-pink); color: white; font-size: 1rem; }
+#copyLink { background: var(--secondary-pink); color: #fff; margin-left: 10px; }
+#yes { background: var(--dark-pink); color: white; font-size: 1.2rem; }
+#no { background: #fff; color: var(--dark-pink); border: 2px solid var(--dark-pink); position: absolute; }
 
-#yes {
-    background: var(--dark-pink);
-    color: white;
-    font-size: 1.2rem;
-}
-
-#no {
-    background: #fff;
-    color: var(--dark-pink);
-    border: 2px solid var(--dark-pink);
-    position: absolute;
-}
-
-/* Stats */
 .stats-footer {
     margin-top: 25px;
     font-size: 12px;
@@ -106,16 +91,10 @@ button {
     padding-top: 15px;
 }
 
-/* Hearts & confetti */
-.heart {
-    position: absolute;
-    animation: fly 4s linear forwards;
-    z-index: 10;
-}
+.heart { position: absolute; animation: fly 4s linear forwards; z-index: 10; }
 @keyframes fly { to { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }
 
-#linkBox { word-break: break-all; font-size: 12px; background: #fff; padding: 10px; border-radius: 10px; margin-top: 10px; }
-
+#linkBox { word-break: break-all; font-size: 12px; background: #fff; padding: 10px; border-radius: 10px; margin-top: 10px; display:flex; justify-content:space-between; align-items:center;}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
@@ -130,7 +109,10 @@ button {
     <input id="fromInput" placeholder="Your Name" />
     <input id="toInput" placeholder="Crush's Name" />
     <button id="generate" onclick="generateLink()">Create Magic ✨</button>
-    <div id="linkBox" style="display:none;"></div>
+    <div id="linkBox" style="display:none;">
+        <span id="linkText"></span>
+        <button id="copyLink" onclick="copyLink()">Copy 🔗</button>
+    </div>
 </div>
 
 <!-- Game Card -->
@@ -138,7 +120,7 @@ button {
     <h2 id="question"></h2>
     <p id="fromText"></p>
 
-    <div style="height: 120px; display: flex; align-items: center; justify-content: center; position: relative;">
+    <div style="height: 180px; display: flex; align-items: center; justify-content: center; position: relative;">
         <button id="yes">YES! 💘</button>
         <button id="no">No 😢</button>
     </div>
@@ -160,7 +142,7 @@ const params = new URLSearchParams(window.location.search);
 const fromName = params.get("from");
 const toName = params.get("to");
 
-// Initialize View Count
+// Initialize view count
 let views = parseInt(localStorage.getItem('v_count') || 0);
 if(fromName){
     views++;
@@ -179,8 +161,16 @@ function generateLink(){
     if(!f || !t) return alert("Please fill both names! ❤️");
     const link = `${window.location.origin}${window.location.pathname}?from=${encodeURIComponent(f)}&to=${encodeURIComponent(t)}`;
     const box = document.getElementById('linkBox');
-    box.style.display='block';
-    box.innerHTML = `Send this to ${t}: <br><small>${link}</small>`;
+    box.style.display='flex';
+    document.getElementById('linkText').innerText = link;
+}
+
+// Copy Link
+function copyLink(){
+    const linkText = document.getElementById('linkText').innerText;
+    navigator.clipboard.writeText(linkText).then(()=>{
+        alert("Link copied! 💘");
+    });
 }
 
 // Runaway No Button
@@ -192,8 +182,8 @@ function moveNo(){
     escapes++;
     document.getElementById('escCount').innerText = escapes;
 
-    const x = Math.random() * 150 - 75;
-    const y = Math.random() * 100 - 50;
+    const x = Math.random() * 200 - 100;
+    const y = Math.random() * 150 - 75;
     noBtn.style.transform = `translate(${x}px, ${y}px) scale(${Math.max(1 - escapes*0.1,0.4)})`;
 
     yesBtn.style.transform = `scale(${1 + escapes*0.15})`;
