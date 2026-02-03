@@ -24,16 +24,6 @@ body {
     overflow: hidden;
 }
 
-.floating-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    pointer-events: none;
-}
-
 .card {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(15px);
@@ -44,13 +34,6 @@ body {
     text-align: center;
     width: 450px;
     position: relative;
-    transition: transform 0.3s ease;
-    animation: floatCard 3s ease-in-out infinite;
-}
-
-@keyframes floatCard {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
 }
 
 h2 { color: var(--dark-pink); font-size: 26px; margin-bottom: 10px; }
@@ -62,10 +45,7 @@ input {
     margin: 10px 0;
     border: 2px solid var(--secondary-pink);
     border-radius: 15px;
-    outline: none;
-    transition: 0.3s;
 }
-input:focus { border-color: var(--dark-pink); }
 
 button {
     padding: 12px 25px;
@@ -73,13 +53,13 @@ button {
     border: none;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.2s ease;
 }
 
-#generate { background: var(--dark-pink); color: white; font-size: 1rem; }
-#copyLink { background: var(--secondary-pink); color: #fff; margin-left: 10px; }
-#yes { background: var(--dark-pink); color: white; font-size: 1.2rem; }
-#no { background: #fff; color: var(--dark-pink); border: 2px solid var(--dark-pink); position: absolute; }
+#generate { background: var(--dark-pink); color: white; }
+#copyLink { background: var(--secondary-pink); color: white; margin-left: 10px; }
+#yes { background: var(--dark-pink); color: white; }
+#no { background: white; color: var(--dark-pink); border: 2px solid var(--dark-pink); position: absolute; }
 
 .stats-footer {
     margin-top: 25px;
@@ -87,25 +67,21 @@ button {
     color: #ad1457;
     display: flex;
     justify-content: space-around;
-    border-top: 1px solid rgba(255, 77, 109, 0.2);
-    padding-top: 15px;
 }
 
-.heart { position: absolute; animation: fly 4s linear forwards; z-index: 10; }
-@keyframes fly { to { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }
+.heart { position: absolute; animation: floatUp 4s linear forwards; }
+@keyframes floatUp { to { transform: translateY(-100vh); opacity: 0; } }
 
-#linkBox { word-break: break-all; font-size: 12px; background: #fff; padding: 10px; border-radius: 10px; margin-top: 10px; display:flex; justify-content:space-between; align-items:center;}
+#linkBox { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 10px; border-radius: 10px; font-size: 12px; margin-top: 10px; }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
-<div class="floating-bg" id="bgLayer"></div>
-
-<!-- Setup Card -->
+<!-- Setup -->
 <div class="card" id="setup">
     <h2>Valentine Maker 🎀</h2>
-    <p>Create a link for your crush!</p>
     <input id="fromInput" placeholder="Your Name" />
     <input id="toInput" placeholder="Crush's Name" />
     <button id="generate" onclick="generateLink()">Create Magic ✨</button>
@@ -115,12 +91,12 @@ button {
     </div>
 </div>
 
-<!-- Game Card -->
+<!-- Game -->
 <div class="card" id="game" style="display:none;">
     <h2 id="question"></h2>
     <p id="fromText"></p>
 
-    <div style="height: 200px; display: flex; align-items: center; justify-content: center; position: relative;">
+    <div style="height:200px; position:relative; display:flex; justify-content:center; align-items:center;">
         <button id="yes">YES! 💘</button>
         <button id="no">No 😢</button>
     </div>
@@ -130,42 +106,36 @@ button {
         <div>😆 Dodged: <span id="escCount">0</span></div>
     </div>
 
-    <div style="margin-top:15px;">
-        <button id="newLinkBtn" style="background: var(--secondary-pink); color: #fff; padding:10px 20px; border-radius:50px; border:none; cursor:pointer;">
-            💌 Create Your Own Valentine Link
-        </button>
-    </div>
+    <button id="newLinkBtn" style="background: var(--secondary-pink); color: white; margin-top:15px;">
+        💌 Create Your Own Valentine Link
+    </button>
 
-    <div id="message" style="margin-top: 15px; font-weight: 600; color: var(--dark-pink);"></div>
+    <div id="message" style="margin-top:15px;color:var(--dark-pink);font-weight:600;"></div>
 </div>
 
 <!-- Sounds -->
-<audio id="yaySound">
+<audio id="clickSound">
     <source src="https://www.soundjay.com/button/sounds/button-3.mp3" type="audio/mpeg">
 </audio>
 <audio id="yameteSound">
-    <!-- Replace with working "Yamete Kudasai" sound link -->
-    <source src="https://www.myinstants.com/media/sounds/yamete-kudasai.mp3" type="audio/mpeg">
+    <source src="https://www.myinstants.com/media/sounds/yamete_kudasai.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-// URL parameters
 const params = new URLSearchParams(window.location.search);
 const fromName = params.get("from");
 const toName = params.get("to");
 
-// View count
+// Views
 let views = parseInt(localStorage.getItem('v_count') || 0);
 if(fromName && toName){
     views++;
     localStorage.setItem('v_count', views);
-
-    document.getElementById('setup').style.display='none';
-    document.getElementById('game').style.display='block';
+    document.getElementById('setup').style.display = 'none';
+    document.getElementById('game').style.display = 'block';
     document.getElementById('question').innerText = `${toName}, will you be my Valentine?`;
     document.getElementById('fromText').innerText = `With love from ${fromName}`;
     document.getElementById('viewCount').innerText = views;
-    document.getElementById('linkBox').style.display='none';
 }
 
 // Generate link
@@ -174,65 +144,49 @@ function generateLink(){
     const t = document.getElementById('toInput').value;
     if(!f || !t) return alert("Please fill both names! ❤️");
     const link = `${window.location.origin}${window.location.pathname}?from=${encodeURIComponent(f)}&to=${encodeURIComponent(t)}`;
-    const box = document.getElementById('linkBox');
-    box.style.display='flex';
+    document.getElementById('linkBox').style.display='flex';
     document.getElementById('linkText').innerText = link;
 }
 
 // Copy link
 function copyLink(){
     const linkText = document.getElementById('linkText').innerText;
-    navigator.clipboard.writeText(linkText).then(()=>{
-        alert("Link copied! 💘");
-    });
+    navigator.clipboard.writeText(linkText).then(()=>alert("Link copied! 💘"));
 }
 
-// No button logic
+// Runaway No
 const noBtn = document.getElementById('no');
 const yesBtn = document.getElementById('yes');
 let escapes = 0;
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-function moveNo() {
+function moveNo(){
     escapes++;
     document.getElementById('escCount').innerText = escapes;
-
-    const cardRect = noBtn.parentElement.getBoundingClientRect();
-    const x = Math.random() * (cardRect.width - noBtn.offsetWidth);
-    const y = Math.random() * (cardRect.height - noBtn.offsetHeight);
-    noBtn.style.transform = `translate(${x}px, ${y}px) scale(${Math.max(1 - escapes*0.1,0.4)})`;
-    yesBtn.style.transform = `scale(${1 + escapes*0.15})`;
-
-    const e = document.createElement('div');
-    e.className='heart';
-    e.innerHTML=['😂','💔','💥','😆'][Math.floor(Math.random()*4)];
-    e.style.left = Math.random()*80+'%';
-    e.style.bottom='10px';
-    e.style.fontSize=(Math.random()*20+20)+'px';
-    document.body.appendChild(e);
-    setTimeout(()=>e.remove(),1500);
-
+    const parentRect = noBtn.parentElement.getBoundingClientRect();
+    const x = Math.random() * (parentRect.width - noBtn.offsetWidth);
+    const y = Math.random() * (parentRect.height - noBtn.offsetHeight);
+    noBtn.style.transform = `translate(${x}px,${y}px) scale(${Math.max(1 - escapes*0.1, 0.4)})`;
+    yesBtn.style.transform = `scale(${1 + escapes*0.1})`;
     if(escapes > 5){
-        noBtn.style.opacity='0';
-        setTimeout(()=>noBtn.remove(),300);
+        noBtn.remove();
     }
 }
 
 if(!isMobile) noBtn.addEventListener('mouseover', moveNo);
-if(isMobile) noBtn.addEventListener('touchstart', e=>{e.preventDefault(); moveNo();});
+else noBtn.addEventListener('touchstart', e=>{ e.preventDefault(); moveNo(); });
 
 // YES button
 yesBtn.addEventListener('click', ()=>{
-    document.getElementById('message').innerHTML="🎉 YAY! Best Day Ever! 🥂";
+    document.getElementById('message').innerText = "🎉 YAY! Best Day Ever! 🥂";
     yesBtn.style.display='none';
-    if(noBtn) noBtn.style.display='none';
+    noBtn.style.display='none';
 
-    // Play sounds
-    document.getElementById('yaySound').play();
+    document.getElementById('clickSound').play();
     document.getElementById('yameteSound').play();
 
-    for(let i=0;i<100;i++){
-        setTimeout(createHeart,i*20);
+    for(let i=0; i<50; i++){
+        setTimeout(createHeart, i*20);
     }
 });
 
@@ -241,14 +195,14 @@ document.getElementById('newLinkBtn').addEventListener('click', ()=>{
     window.location.href = window.location.pathname;
 });
 
-// Hearts animation
+// Floating hearts
 function createHeart(){
     const h = document.createElement('div');
     h.className='heart';
-    h.innerHTML=['❤️','💖','🌸','✨'][Math.floor(Math.random()*4)];
+    h.innerText=['❤️','💖','🌸','✨'][Math.floor(Math.random()*4)];
     h.style.left = Math.random()*100+'vw';
     h.style.bottom='-5%';
-    h.style.fontSize=(Math.random()*20+20)+'px';
+    h.style.fontSize = Math.random()*20+20+'px';
     document.body.appendChild(h);
     setTimeout(()=>h.remove(),4000);
 }
